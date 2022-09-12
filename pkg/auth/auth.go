@@ -47,6 +47,7 @@ type ClientConfig struct {
 	BaseConfig       `ini:",extends"`
 	OidcClientConfig `ini:",extends"`
 	TokenConfig      `ini:",extends"`
+	JwtClientConfig  `ini:",extends"`
 }
 
 func GetDefaultClientConf() ClientConfig {
@@ -54,6 +55,7 @@ func GetDefaultClientConf() ClientConfig {
 		BaseConfig:       getDefaultBaseConf(),
 		OidcClientConfig: getDefaultOidcClientConf(),
 		TokenConfig:      getDefaultTokenConf(),
+		JwtClientConfig:  getDefaultJwtClientConf(),
 	}
 }
 
@@ -61,6 +63,7 @@ type ServerConfig struct {
 	BaseConfig       `ini:",extends"`
 	OidcServerConfig `ini:",extends"`
 	TokenConfig      `ini:",extends"`
+	JwtServerConfig  `ini:",extends"`
 }
 
 func GetDefaultServerConf() ServerConfig {
@@ -68,6 +71,7 @@ func GetDefaultServerConf() ServerConfig {
 		BaseConfig:       getDefaultBaseConf(),
 		OidcServerConfig: getDefaultOidcServerConf(),
 		TokenConfig:      getDefaultTokenConf(),
+		JwtServerConfig:  getDefaultJwtServerConf(),
 	}
 }
 
@@ -83,6 +87,8 @@ func NewAuthSetter(cfg ClientConfig) (authProvider Setter) {
 		authProvider = NewTokenAuth(cfg.BaseConfig, cfg.TokenConfig)
 	case consts.OidcAuthMethod:
 		authProvider = NewOidcAuthSetter(cfg.BaseConfig, cfg.OidcClientConfig)
+	case consts.JwtAuthMethod:
+		authProvider = NewJwtAuthSetter(cfg.BaseConfig, cfg.JwtClientConfig)
 	default:
 		panic(fmt.Sprintf("wrong authentication method: '%s'", cfg.AuthenticationMethod))
 	}
@@ -102,6 +108,8 @@ func NewAuthVerifier(cfg ServerConfig) (authVerifier Verifier) {
 		authVerifier = NewTokenAuth(cfg.BaseConfig, cfg.TokenConfig)
 	case consts.OidcAuthMethod:
 		authVerifier = NewOidcAuthVerifier(cfg.BaseConfig, cfg.OidcServerConfig)
+	case consts.JwtAuthMethod:
+		authVerifier = NewJwtAuthVerifier(cfg.BaseConfig, cfg.JwtServerConfig)
 	}
 
 	return authVerifier

@@ -35,6 +35,7 @@ var (
 	// authentication method
 	TokenAuthMethod = "token"
 	OidcAuthMethod  = "oidc"
+	JwtAuthMethod   = "jwt"
 
 	// TCP multiplexer
 	HTTPConnectTCPMultiplexer = "httpconnect"
